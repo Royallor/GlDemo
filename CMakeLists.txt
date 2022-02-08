@@ -1,19 +1,20 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.16)
 
 project(GLDemo)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -std=c++14 -lstdc++ -lm")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(INCLUDE_PATH ${PROJECT_SOURCE_DIR}/includes)
-set(SRC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 include_directories(${INCLUDE_PATH})
 
-file(GLOB_RECURSE SRC_FILES ${SRC_PATH}/*.cpp)
+add_executable(GLDemo src/triangle/triangle.cpp src/glad.c)
 
-add_executable(GLDemo ${SRC_FILES})
+find_package(glfw3 3.3 REQUIRED)
+find_package(OpenGL REQUIRED)
 
-target_link_libraries(GLDemo glfw)
+target_include_directories(GLDemo PUBLIC
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/includes>
+                           $<INSTALL_INTERFACE:include>)
+target_link_libraries(GLDemo PUBLIC glfw OpenGL::GL ${CMAKE_DL_LIBS})
